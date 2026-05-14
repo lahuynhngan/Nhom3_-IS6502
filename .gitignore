@@ -2,3 +2,7 @@
 .venv/
 pdf/
 data/.DS_Store
+data/
+homework/
+md/
+note/
