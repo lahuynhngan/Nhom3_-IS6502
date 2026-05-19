@@ -1,12 +1,12 @@
 # Linear Regression
 
-Linear Regression, hay hồi quy tuyến tính, là một thuật toán học có giám sát được sử dụng để dự đoán một giá trị số liên tục dựa trên biến đầu vào. Thuật toán này giả định rằng giữa biến đầu vào và biến cần dự đoán tồn tại một mối quan hệ gần tuyến tính.
+Linear Regression, hay hồi quy tuyến tính, là một thuật toán học có giám sát được sử dụng để dự đoán một giá trị số liên tục dựa trên một hoặc nhiều biến đầu vào. Thuật toán này giả định rằng giữa biến đầu vào và biến cần dự đoán tồn tại một mối quan hệ gần tuyến tính.
 
-Ví dụ, nếu cần dự đoán giá nhà dựa trên diện tích, diện tích là biến đầu vào còn giá nhà là biến cần dự đoán. Linear Regression sẽ cố gắng tìm ra một phương trình tuyến tính mô tả mối quan hệ giữa biến đầu vào và giá trị đầu ra.
+Ví dụ, nếu cần dự đoán giá nhà, biến đầu vào có thể là diện tích, số phòng hoặc tuổi của căn nhà. Giá nhà là biến cần dự đoán. Linear Regression sẽ cố gắng tìm ra một phương trình tuyến tính mô tả mối quan hệ giữa biến đầu vào và giá trị đầu ra.
 
 ## Ý tưởng chính
 
-Ý tưởng chính của Linear Regression là tìm một đường thẳng sao cho đường đó nằm gần các điểm dữ liệu thật nhất có thể.
+Ý tưởng chính của Linear Regression là tìm một đường thẳng, hoặc một mặt phẳng trong trường hợp có nhiều biến, sao cho đường hoặc mặt phẳng đó nằm gần các điểm dữ liệu thật nhất có thể.
 
 Với Simple Linear Regression, mô hình chỉ có một biến độc lập. Công thức có dạng:
 
@@ -21,29 +21,24 @@ Trong đó:
 - `b0` là hệ số chặn, tức giá trị dự đoán khi `x = 0`.
 - `b1` là hệ số góc, cho biết khi `x` tăng thêm 1 đơn vị thì `y` thay đổi bao nhiêu.
 
+Với Multiple Linear Regression, mô hình có nhiều biến độc lập. Công thức có dạng:
+
+```text
+y = b0 + b1*x1 + b2*x2 + ... + bp*xp
+```
+
+Trong đó `x1, x2, ..., xp` là các biến đầu vào, còn `b1, b2, ..., bp` là các hệ số tương ứng với từng biến.
+
 ## Cách Linear Regression học
 
-Linear Regression học bằng cách tìm các hệ số `b0` và `b1` sao cho sai số giữa giá trị dự đoán và giá trị thực tế là nhỏ nhất.
+Trong Linear Regression, "học" nghĩa là tìm ra các hệ số của mô hình từ dữ liệu ban đầu. Sau khi học xong, mô hình dùng các hệ số này để dự đoán giá trị mới.
 
-Với mỗi điểm dữ liệu, mô hình tạo ra một giá trị dự đoán:
+Có thể hiểu quá trình này gồm hai phần:
 
-```text
-predicted_y = b0 + b1*x
-```
+- Giai đoạn học: dùng dữ liệu `X` và `Y` để tính các hệ số hồi quy.
+- Giai đoạn dự đoán: dùng các hệ số đã học và dữ liệu đầu vào mới để tính giá trị `y` mới.
 
-Sau đó, sai số được tính bằng hiệu giữa giá trị thực tế và giá trị dự đoán:
-
-```text
-error = actual_y - predicted_y
-```
-
-Mục tiêu của thuật toán là làm cho tổng sai số của toàn bộ dữ liệu nhỏ nhất. Thông thường, Linear Regression sử dụng tổng bình phương sai số vì cách này giúp tránh trường hợp sai số âm và sai số dương triệt tiêu lẫn nhau.
-
-```text
-sum_squared_error = sum((actual_y - predicted_y)^2)
-```
-
-Nói đơn giản, thuật toán sẽ tìm bộ hệ số làm cho các dự đoán càng gần dữ liệu thật càng tốt.
+Phần dưới sẽ trình bày chi tiết cách tính trong Simple Linear Regression và Multiple Linear Regression.
 
 ## Simple Linear Regression
 
@@ -186,6 +181,218 @@ FUNCTION SimpleLinearRegression(X, Y):
 FUNCTION PredictSimpleLinearRegression(b0, b1, x_new):
 
     y_predicted = b0 + b1 * x_new  # thay x_new vào phương trình để dự đoán
+
+    RETURN y_predicted
+```
+
+## Multiple Linear Regression
+
+Về bản chất, Multiple Linear Regression có cách tính tương tự Simple Linear Regression: mô hình vẫn cần tìm các hệ số sao cho giá trị dự đoán gần với giá trị thực tế nhất. Điểm khác là Simple Linear Regression chỉ có một biến đầu vào, còn Multiple Linear Regression có nhiều biến đầu vào.
+
+Nếu chỉ có một biến `x`, mô hình chỉ cần tìm `b0` và `b1`:
+
+```text
+y = b0 + b1*x
+```
+
+Nhưng nếu có nhiều biến như diện tích, số phòng và tuổi căn nhà, phương trình sẽ dài hơn:
+
+```text
+y = b0 + b1*x1 + b2*x2 + b3*x3
+```
+
+Khi số lượng biến tăng lên, việc tính từng hệ số riêng lẻ bằng cách viết công thức thủ công sẽ rất dài và khó theo dõi. Vì vậy, Multiple Linear Regression thường dùng ma trận để gom toàn bộ dữ liệu và hệ số lại, sau đó giải trong một công thức chung.
+
+Để hiểu bản chất, giả sử ta dự đoán giá nhà bằng 2 biến: diện tích và số phòng. Phương trình cần tìm là:
+
+```text
+giá = b0 + b1*diện_tích + b2*số_phòng
+```
+
+Giả sử có dữ liệu thật như sau:
+
+```text
+Nhà 1: diện tích = 50, số phòng = 2, giá = 1.7
+Nhà 2: diện tích = 60, số phòng = 3, giá = 2.0
+Nhà 3: diện tích = 80, số phòng = 4, giá = 2.5
+```
+
+Thay từng dòng dữ liệu vào phương trình, ta có hệ phương trình:
+
+```text
+b0 + 50*b1 + 2*b2 = 1.7
+b0 + 60*b1 + 3*b2 = 2.0
+b0 + 80*b1 + 4*b2 = 2.5
+```
+
+Việc học Multiple Linear Regression chính là tìm `b0`, `b1`, `b2` sao cho các phương trình trên đúng hoặc gần đúng nhất.
+
+Để viết hệ phương trình này dưới dạng ma trận, ta viết rõ `b0` thành `1*b0`:
+
+```text
+1*b0 + 50*b1 + 2*b2 = 1.7
+1*b0 + 60*b1 + 3*b2 = 2.0
+1*b0 + 80*b1 + 4*b2 = 2.5
+```
+
+Khi đó, phần hệ số đứng trước `b0`, `b1`, `b2` được gom thành ma trận `X_new`:
+
+```text
+X_new = [
+    [1, 50, 2],
+    [1, 60, 3],
+    [1, 80, 4]
+]
+```
+
+Cột đầu tiên toàn số `1` xuất hiện để đưa `b0` vào phép nhân ma trận. Nếu không có cột `1`, phép tính chỉ có `b1*x1 + b2*x2` và sẽ bị thiếu hệ số chặn `b0`.
+
+Vector hệ số cần tìm là:
+
+```text
+B = [b0, b1, b2]
+```
+
+Vector giá trị thực tế là:
+
+```text
+Y = [1.7, 2.0, 2.5]
+```
+
+Toàn bộ hệ phương trình có thể viết gọn thành:
+
+```text
+X_new * B = Y
+```
+
+Nói cách khác, ma trận chỉ là cách viết gọn của nhiều phương trình cùng lúc:
+
+```text
+[1, 50, 2] * [b0, b1, b2] = 1.7
+[1, 60, 3] * [b0, b1, b2] = 2.0
+[1, 80, 4] * [b0, b1, b2] = 2.5
+```
+
+Vấn đề là ta cần tìm `B`. Nếu đây là phương trình số thường:
+
+```text
+3 * b = 6
+```
+
+thì ta có thể chia hai vế cho `3` để tìm `b`:
+
+```text
+b = 6 / 3 = 2
+```
+
+Nhưng với ma trận:
+
+```text
+X_new * B = Y
+```
+
+ta không thể chia trực tiếp cho `X_new` như số thường. Nếu `X_new` là ma trận vuông, ta có thể dùng nghịch đảo của nó. Tuy nhiên trong thực tế, `X_new` thường không vuông vì số mẫu dữ liệu thường khác số hệ số cần tìm.
+
+Ví dụ nếu có 100 căn nhà và 2 biến đầu vào, sau khi thêm cột `1`, `X_new` sẽ có kích thước:
+
+```text
+100 dòng × 3 cột
+```
+
+Ma trận này không vuông, nên không thể tính nghịch đảo trực tiếp.
+
+Để giải quyết, ta nhân cả hai vế với ma trận chuyển vị của `X_new`, gọi là `XT`:
+
+```text
+X_new * B = Y
+
+XT * X_new * B = XT * Y
+```
+
+Sau đó đặt:
+
+```text
+XTX = XT * X_new
+XTY = XT * Y
+```
+
+Khi đó phương trình trở thành:
+
+```text
+XTX * B = XTY
+```
+
+Điểm quan trọng là `XTX` là ma trận vuông. Ví dụ:
+
+```text
+X_new có kích thước 100×3
+XT có kích thước 3×100
+
+XT * X_new có kích thước 3×3
+```
+
+Lúc này `XTX` đã vuông, nên ta có thể dùng nghịch đảo để tìm `B`:
+
+```text
+B = inverse(XTX) * XTY
+```
+
+Viết đầy đủ:
+
+```text
+B = inverse(transpose(X_new) * X_new) * transpose(X_new) * Y
+```
+
+Công thức này được gọi là Normal Equation. Nó giúp tính toàn bộ hệ số `b0, b1, b2, ..., bp` cùng lúc.
+
+Tóm lại, các bước sau bước thêm cột `1` có thể hiểu như sau:
+
+1. Chuẩn bị ma trận `X` chứa các biến đầu vào.
+2. Chuẩn bị vector `Y` chứa giá trị thực tế.
+3. Thêm cột `1` vào đầu `X` để tạo `X_new`.
+4. Viết bài toán thành `X_new * B = Y`.
+5. Vì `X_new` thường không vuông, không thể lấy nghịch đảo trực tiếp.
+6. Nhân cả hai vế với `XT` để tạo ra `XTX * B = XTY`.
+7. Vì `XTX` là ma trận vuông, dùng `inverse(XTX)` để giải ra `B`.
+
+Sau khi có `B`, mô hình có thể dự đoán dữ liệu mới bằng cách nhân từng hệ số với biến tương ứng:
+
+```text
+predicted_y = b0 + b1*x1 + b2*x2 + ... + bp*xp
+```
+
+### Mã giả Multiple Linear Regression
+
+```text
+FUNCTION MultipleLinearRegression(X, Y):
+
+    n = số hàng của X      # số mẫu dữ liệu
+    p = số cột của X       # số biến đầu vào
+
+    X_new = ma trận mới có n hàng và p + 1 cột
+
+    FOR i = 0 TO n - 1:
+        X_new[i][0] = 1
+
+        FOR j = 0 TO p - 1:
+            X_new[i][j + 1] = X[i][j]
+
+    XT = transpose(X_new)
+
+    XTX = XT * X_new
+    XTY = XT * Y
+
+    B = inverse(XTX) * XTY
+
+    RETURN B
+
+
+FUNCTION PredictMultipleLinearRegression(B, x_new):
+
+    y_predicted = B[0]
+
+    FOR j = 1 TO length(B) - 1:
+        y_predicted = y_predicted + B[j] * x_new[j - 1]
 
     RETURN y_predicted
 ```
